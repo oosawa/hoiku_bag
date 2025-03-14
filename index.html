@@ -8,6 +8,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const circles = document.querySelectorAll(".status-circle");
+            const resetButton = document.getElementById("reset-button");
             
             // ローカルストレージからデータを読み込む
             const savedData = JSON.parse(localStorage.getItem("hoikubag-status")) || {};
@@ -42,6 +43,14 @@
                     circle.classList.add("bg-gray-300");
                 }
             }
+            
+            // リセットボタンの動作
+            resetButton.addEventListener("click", () => {
+                circles.forEach(circle => {
+                    updateCircle(circle, "0");
+                });
+                localStorage.removeItem("hoikubag-status");
+            });
         });
     </script>
 </head>
@@ -90,7 +99,7 @@
             </div>
         </div>
         
-        <button class="w-full mt-4 bg-blue-500 text-white py-2 rounded-md">完了</button>
+        <button id="reset-button" class="w-full mt-4 bg-red-500 text-white py-2 rounded-md">リセット</button>
     </div>
 </body>
 </html>
