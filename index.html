@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HoikuBag</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".status-circle").forEach(circle => {
+                circle.addEventListener("click", () => {
+                    if (circle.dataset.status === "0") {
+                        circle.dataset.status = "1";
+                        circle.classList.remove("bg-gray-300");
+                        circle.classList.add("bg-blue-500");
+                    } else if (circle.dataset.status === "1") {
+                        circle.dataset.status = "2";
+                        circle.classList.remove("bg-blue-500");
+                        circle.classList.add("bg-green-500");
+                    } else {
+                        circle.dataset.status = "0";
+                        circle.classList.remove("bg-green-500");
+                        circle.classList.add("bg-gray-300");
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
     <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-4">
@@ -16,37 +37,37 @@
             <div class="flex justify-between items-center border-b pb-2">
                 <span>オムツ</span>
                 <div class="flex space-x-2">
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
                 </div>
             </div>
             
             <div class="flex justify-between items-center border-b pb-2">
                 <span>上着</span>
                 <div class="flex space-x-2">
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
                 </div>
             </div>
             
             <div class="flex justify-between items-center border-b pb-2">
                 <span>ズボン</span>
                 <div class="flex space-x-2">
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
                 </div>
             </div>
             
             <div class="flex justify-between items-center border-b pb-2">
                 <span>肌着</span>
                 <div class="flex space-x-2">
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
-                    <span class="w-6 h-6 bg-gray-300 rounded-full inline-block"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
+                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
                 </div>
             </div>
         </div>
