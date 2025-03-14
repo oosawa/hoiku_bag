@@ -31,6 +31,16 @@
             
             const itemListContainer = document.getElementById("item-list");
             const savedData = JSON.parse(localStorage.getItem("hoikubag-status")) || {};
+            const lastUsedDate = localStorage.getItem("hoikubag-last-used-date");
+            const noteInput = document.getElementById("note-input");
+            
+            function getFormattedDate(date) {
+                const days = ["日", "月", "火", "水", "木", "金", "土"];
+                return `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getDate().toString().padStart(2, "0")} (${days[date.getDay()]})`;
+            }
+            
+            let firstPressDate = lastUsedDate ? new Date(lastUsedDate) : null;
+            let allGray = true;
             
             items.forEach((item, itemIndex) => {
                 const itemRow = document.createElement("div");
@@ -48,12 +58,25 @@
                     circle.dataset.status = savedData[`${itemIndex}-${i}`] || "0";
                     updateCircle(circle, circle.dataset.status);
                     
+                    if (circle.dataset.status !== "0") {
+                        allGray = false;
+                        if (!firstPressDate) {
+                            firstPressDate = new Date();
+                            localStorage.setItem("hoikubag-last-used-date", firstPressDate.toISOString());
+                        }
+                    }
+                    
                     circle.addEventListener("click", () => {
                         let newStatus = circle.dataset.status === "0" ? "1" : "0";
                         updateCircle(circle, newStatus);
                         
                         savedData[`${itemIndex}-${i}`] = newStatus;
                         localStorage.setItem("hoikubag-status", JSON.stringify(savedData));
+                        
+                        if (newStatus !== "0" && !firstPressDate) {
+                            firstPressDate = new Date();
+                            localStorage.setItem("hoikubag-last-used-date", firstPressDate.toISOString());
+                        }
                     });
                     
                     statusContainer.appendChild(circle);
@@ -63,6 +86,10 @@
                 itemRow.appendChild(statusContainer);
                 itemListContainer.appendChild(itemRow);
             });
+            
+            const today = new Date();
+            const displayDate = allGray ? today : firstPressDate;
+            document.getElementById("display-date").textContent = getFormattedDate(displayDate);
             
             function updateCircle(circle, status) {
                 circle.dataset.status = status;
@@ -74,11 +101,21 @@
                 }
             }
             
+            // ノートの読み込み
+            noteInput.value = localStorage.getItem("hoikubag-note") || "";
+            noteInput.addEventListener("input", () => {
+                localStorage.setItem("hoikubag-note", noteInput.value);
+            });
+            
             document.getElementById("reset-button").addEventListener("click", () => {
                 document.querySelectorAll(".status-circle").forEach(circle => {
                     updateCircle(circle, "0");
                 });
                 localStorage.removeItem("hoikubag-status");
+                localStorage.removeItem("hoikubag-last-used-date");
+                localStorage.removeItem("hoikubag-note");
+                noteInput.value = "";
+                document.getElementById("display-date").textContent = getFormattedDate(new Date());
             });
         });
     </script>
@@ -87,9 +124,11 @@
     <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-4">
         <h1 class="text-xl font-bold text-center mb-4">HoikuBag</h1>
         
-        <div class="text-center text-lg font-semibold mb-2">2025/03/14</div>
+        <div id="display-date" class="text-center text-lg font-semibold mb-2"></div>
         
         <div id="item-list" class="space-y-4"></div>
+        
+        <textarea id="note-input" class="w-full h-20 p-2 border rounded-md mb-4" placeholder="メモを入力..."></textarea>
         
         <button id="reset-button" class="w-full mt-4 bg-red-500 text-white py-2 rounded-md">リセット</button>
     </div>
