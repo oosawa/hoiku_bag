@@ -7,24 +7,51 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const circles = document.querySelectorAll(".status-circle");
-            const resetButton = document.getElementById("reset-button");
+            const items = [
+                { name: "オムツ", count: 5 },
+                { name: "上着", count: 3 },
+                { name: "ズボン", count: 3 },
+                { name: "肌着", count: 2 },
+                { name: "タオル", count: 1 },
+                { name: "エプロン", count: 3 },
+                { name: "靴下", count: 1 },
+                { name: "さわやか", count: 3 },
+                { name: "絵本", count: 1 }
+            ];
             
-            // ローカルストレージからデータを読み込む
+            const itemListContainer = document.getElementById("item-list");
             const savedData = JSON.parse(localStorage.getItem("hoikubag-status")) || {};
             
-            circles.forEach((circle, index) => {
-                const savedStatus = savedData[index] || "0";
-                updateCircle(circle, savedStatus);
+            items.forEach((item, itemIndex) => {
+                const itemRow = document.createElement("div");
+                itemRow.classList.add("grid", "grid-cols-2", "items-center", "border-b", "pb-2");
                 
-                circle.addEventListener("click", () => {
-                    let newStatus = circle.dataset.status === "0" ? "1" : "0";
-                    updateCircle(circle, newStatus);
+                const itemName = document.createElement("span");
+                itemName.textContent = item.name;
+                
+                const statusContainer = document.createElement("div");
+                statusContainer.classList.add("flex", "space-x-2", "justify-start");
+                
+                for (let i = 0; i < item.count; i++) {
+                    const circle = document.createElement("span");
+                    circle.classList.add("status-circle", "w-6", "h-6", "bg-gray-300", "rounded-full", "inline-block");
+                    circle.dataset.status = savedData[`${itemIndex}-${i}`] || "0";
+                    updateCircle(circle, circle.dataset.status);
                     
-                    // データをローカルストレージに保存
-                    savedData[index] = newStatus;
-                    localStorage.setItem("hoikubag-status", JSON.stringify(savedData));
-                });
+                    circle.addEventListener("click", () => {
+                        let newStatus = circle.dataset.status === "0" ? "1" : "0";
+                        updateCircle(circle, newStatus);
+                        
+                        savedData[`${itemIndex}-${i}`] = newStatus;
+                        localStorage.setItem("hoikubag-status", JSON.stringify(savedData));
+                    });
+                    
+                    statusContainer.appendChild(circle);
+                }
+                
+                itemRow.appendChild(itemName);
+                itemRow.appendChild(statusContainer);
+                itemListContainer.appendChild(itemRow);
             });
             
             function updateCircle(circle, status) {
@@ -37,9 +64,8 @@
                 }
             }
             
-            // リセットボタンの動作
-            resetButton.addEventListener("click", () => {
-                circles.forEach(circle => {
+            document.getElementById("reset-button").addEventListener("click", () => {
+                document.querySelectorAll(".status-circle").forEach(circle => {
                     updateCircle(circle, "0");
                 });
                 localStorage.removeItem("hoikubag-status");
@@ -53,75 +79,7 @@
         
         <div class="text-center text-lg font-semibold mb-2">2025/03/14</div>
         
-        <div class="space-y-4">
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>オムツ</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>上着</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>ズボン</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>肌着</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>タオル</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>エプロン</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>靴下</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>さわやか</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 items-center border-b pb-2">
-                <span>絵本</span>
-                <div class="flex space-x-2 justify-start">
-                    <span class="status-circle w-6 h-6 bg-gray-300 rounded-full inline-block" data-status="0"></span>
-                </div>
-            </div>
-        </div>
+        <div id="item-list" class="space-y-4"></div>
         
         <button id="reset-button" class="w-full mt-4 bg-red-500 text-white py-2 rounded-md">リセット</button>
     </div>
